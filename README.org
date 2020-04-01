@@ -1,0 +1,15 @@
+#+title: Schéma des données de l'algorithme d'orientation COVID19
+
+Ce dépôt contient seulement [[file:openapi3.json][le schéma des données]] de l'algorithme d'orientation COVID19.
+
+Pour la documentation sur l'ensemble de l'algorithme (questionnaire inclus), voir [[https://github.com/Delegation-numerique-en-sante/covid19-algorithme-orientation][ce dépôt]].
+
+Pour un exemple d'implémentation l'algorithme (API Web en Phoenix + Redis), voir [[https://github.com/Delegation-numerique-en-sante/covid19-algorithme-orientation-elixir][ce dépôt]].
+
+Pour tester l'API Web, voir [[https://covid19-orientation.herokuapp.com][ce lien]].
+
+** Licence
+
+2020 Délégation ministérielle du numérique en santé et les contributeur·e·s du dépôt.
+
+Le code source de cette application est publié sous licence [[file:LICENSE][AGPL-3.0]].
