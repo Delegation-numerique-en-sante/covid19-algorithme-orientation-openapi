@@ -1,6 +1,6 @@
 #+title: Schéma des données de l'algorithme d'orientation COVID19
 
-Ce dépôt contient seulement [[file:openapi3.json][le schéma des données]] de l'algorithme d'orientation COVID19.
+Ce dépôt contient seulement [[file:covid19-algorithme-orientation-openapi.json][le schéma des données]] de l'algorithme d'orientation COVID19.
 
 Pour la documentation sur l'ensemble de l'algorithme (questionnaire inclus), voir [[https://github.com/Delegation-numerique-en-sante/covid19-algorithme-orientation][ce dépôt]].
 
