@@ -5,57 +5,29 @@
       "Calculations": {
         "description": "[Calculations](https://github.com/Delegation-numerique-en-sante/covid19-algorithme-questionnaire/blob/master/implementation.org#conseils-pour-limpl%C3%A9mentation-de-lalgorithme)",
         "example": {
-          "bmi": 21.9,
-          "bmi_more_30": true,
-          "fever": true,
-          "gravity_factors": 3,
-          "gravity_factors_major": 1,
-          "gravity_factors_minor": 2,
-          "imc": 21.9,
-          "risk_factors": 1
+          "fever_algo": true,
+          "heart_disease_algo": true,
+          "immunosuppressant_disease_algo": true,
+          "immunosuppressant_drug_algo": true
         },
         "properties": {
-          "bmi": {
-            "description": "BMI",
-            "type": "number"
-          },
-          "bmi_more_30": {
-            "description": "Si la personne a au moins 30 d'IMC en kg/(cm/100)2",
+          "fever_algo": {
+            "description": "Si la personne a de la fièvre",
             "type": "boolean"
           },
-          "fever": {
-            "description": "Indicateur de fièvre",
+          "heart_disease_algo": {
+            "description": "Maladie cardiaque",
             "type": "boolean"
           },
-          "gravity_factors": {
-            "description": "Facteurs de gravité mineurs + majeurs",
-            "type": "integer"
+          "immunosuppressant_disease_algo": {
+            "description": "Maladie défenses immunitaires",
+            "type": "boolean"
           },
-          "gravity_factors_major": {
-            "description": "Facteurs de gravité majeurs",
-            "type": "integer"
-          },
-          "gravity_factors_minor": {
-            "description": "Facteurs de gravité mineurs",
-            "type": "integer"
-          },
-          "imc": {
-            "description": "IMC",
-            "type": "number"
-          },
-          "risk_factors": {
-            "description": "Facteurs pronostique défavorables liés au terrain",
-            "type": "integer"
+          "immunosuppressant_drug_algo": {
+            "description": "Traitement immunodépresseur",
+            "type": "boolean"
           }
         },
-        "required": [
-          "bmi_more_30",
-          "fever",
-          "gravity_factors",
-          "gravity_factors_minor",
-          "gravity_factors_major",
-          "risk_factors"
-        ],
         "title": "Calculations",
         "type": "object",
         "x-struct": "Elixir.Covid19QuestionnaireWeb.Schemas.Calculations"
@@ -123,47 +95,33 @@
       "Metadata": {
         "description": "[Caractéristiques du questionnaire](https://docs.google.com/spreadsheets/d/1Ne7QEp_oMHRxxYhqT56AWugfTaywu-cNRZsWPrMGvkY/edit#gid=0)",
         "example": {
-          "algo_version": "2020-04-04T13:24:44.389249Z",
+          "algo_version": "2020-04-04",
           "date": "2020-04-04T13:24:44.389249Z",
           "duration": 3600,
-          "form_version": "2020-04-04T13:24:44.389249Z"
+          "form_version": "2020-04-04",
+          "orientation": "orientation_SAMU"
         },
         "properties": {
           "algo_version": {
-            "description": "Version de l'algorithme médical",
-            "format": "date-time",
+            "description": "Version de l’algorithme",
+            "format": "date",
             "type": "string"
           },
           "date": {
-            "description": "Date de fin de remplissage du questionnaire",
+            "description": "Date de saisie",
             "format": "date-time",
             "type": "string"
           },
           "duration": {
-            "description": "Durée de remplissage du questionnaire (seconds)",
+            "description": "Durée de saisie en secondes",
             "type": "integer"
           },
           "form_version": {
-            "description": "Version du questionnaire",
-            "format": "date-time",
+            "description": "Version du formulaire",
+            "format": "date",
             "type": "string"
-          }
-        },
-        "required": [
-          "form_version",
-          "algo_version"
-        ],
-        "title": "Metadata",
-        "type": "object",
-        "x-struct": "Elixir.Covid19QuestionnaireWeb.Schemas.Metadata"
-      },
-      "Orientation": {
-        "description": "[Orientation du questionnaire COVID19](https://github.com/Delegation-numerique-en-sante/covid19-algorithme-questionnaire/blob/master/pseudo-code.org#conclusions-possibles)",
-        "example": {
-          "code": "orientation_SAMU"
-        },
-        "properties": {
-          "code": {
+          },
+          "orientation": {
             "description": "[Orientations possibles](https://github.com/Delegation-numerique-en-sante/covid19-algorithme-questionnaire/blob/master/pseudo-code.org#conclusions-possibles)",
             "enum": [
               "orientation_moins_de_15_ans",
@@ -179,83 +137,41 @@
           }
         },
         "required": [
-          "code"
+          "form_version",
+          "algo_version"
         ],
-        "title": "Orientation",
+        "title": "Metadata",
         "type": "object",
-        "x-struct": "Elixir.Covid19QuestionnaireWeb.Schemas.Orientation"
-      },
-      "Patient": {
-        "description": "[Caractéristiques du patient](https://docs.google.com/spreadsheets/d/1Ne7QEp_oMHRxxYhqT56AWugfTaywu-cNRZsWPrMGvkY/edit#gid=0)",
-        "example": {
-          "age_range": "sup_70",
-          "height": 173,
-          "postal_code": "75000",
-          "weight": 65.5
-        },
-        "properties": {
-          "age_range": {
-            "description": "Âge de la personne",
-            "enum": [
-              "inf_15",
-              "from_15_to_49",
-              "from_50_to_69",
-              "sup_70"
-            ],
-            "type": "string"
-          },
-          "height": {
-            "description": "Quelle est votre taille en centimètres ?",
-            "type": "integer"
-          },
-          "postal_code": {
-            "description": "Code postal",
-            "type": "string"
-          },
-          "weight": {
-            "description": "Quel est votre poids en kilogrammes ?",
-            "type": "number"
-          }
-        },
-        "title": "Patient",
-        "type": "object",
-        "x-struct": "Elixir.Covid19QuestionnaireWeb.Schemas.Patient"
+        "x-struct": "Elixir.Covid19QuestionnaireWeb.Schemas.Metadata"
       },
       "Questionnaire": {
         "description": "[Algorithme d'orientation du COVID19](https://github.com/Delegation-numerique-en-sante/covid19-algorithme-questionnaire/blob/master/pseudo-code.org#pr%C3%A9sentation-de-lalgorithme-dquestionnaire-covid19)",
         "example": {
           "calculations": {
-            "bmi": 21.9,
-            "bmi_more_30": true,
-            "fever": true,
-            "gravity_factors": 3,
-            "gravity_factors_major": 1,
-            "gravity_factors_minor": 2,
-            "imc": 21.9,
-            "risk_factors": 1
+            "fever_algo": true,
+            "heart_disease_algo": true,
+            "immunosuppressant_disease_algo": true,
+            "immunosuppressant_drug_algo": true
           },
           "metadata": {
-            "algo_version": "2020-04-04T13:24:44.389249Z",
+            "algo_version": "2020-04-04",
             "date": "2020-04-04T13:24:44.389249Z",
             "duration": 3600,
-            "form_version": "2020-04-04T13:24:44.389249Z"
+            "form_version": "2020-04-04",
+            "orientation": "orientation_SAMU"
           },
-          "orientation": {
-            "code": "orientation_SAMU"
-          },
-          "patient": {
+          "respondent": {
             "age_range": "sup_70",
-            "height": 173,
-            "postal_code": "75000",
-            "weight": 65.5
+            "imc": 21.9,
+            "postal_code": "75000"
           },
           "risk_factors": {
             "breathing_disease": true,
             "cancer": true,
             "diabetes": true,
-            "heart_disease": true,
-            "immunosuppressant_disease": true,
-            "immunosuppressant_drug": true,
+            "heart_disease": 1,
+            "immunosuppressant_disease": 1,
+            "immunosuppressant_drug": 1,
             "kidney_disease": true,
             "liver_disease": true,
             "pregnant": 1
@@ -266,7 +182,7 @@
             "cough": true,
             "diarrhea": true,
             "feeding_day": true,
-            "fever": false,
+            "fever": 999,
             "sore_throat_aches": true,
             "temperature_cat": "35.5-37.7",
             "tiredness": true,
@@ -284,11 +200,8 @@
           "metadata": {
             "$ref": "#/components/schemas/Metadata"
           },
-          "orientation": {
-            "$ref": "#/components/schemas/Orientation"
-          },
-          "patient": {
-            "$ref": "#/components/schemas/Patient"
+          "respondent": {
+            "$ref": "#/components/schemas/Respondent"
           },
           "risk_factors": {
             "$ref": "#/components/schemas/RiskFactors"
@@ -302,9 +215,10 @@
         },
         "required": [
           "metadata",
-          "patient",
+          "respondent",
           "symptoms",
-          "risk_factors"
+          "risk_factors",
+          "calculations"
         ],
         "title": "Questionnaire",
         "type": "object",
@@ -314,23 +228,29 @@
         "description": "Corps de la requête POST pour lancer l'algorithme d'orientation",
         "example": {
           "questionnaire": {
-            "metadata": {
-              "algo_version": "2020-04-04T13:24:44.389249Z",
-              "form_version": "2020-04-04T13:24:44.389249Z"
+            "calculations": {
+              "fever_algo": true,
+              "heart_disease_algo": true,
+              "immunosuppressant_disease_algo": true,
+              "immunosuppressant_drug_algo": true
             },
-            "patient": {
+            "metadata": {
+              "algo_version": "2020-04-04",
+              "form_version": "2020-04-04",
+              "orientation": "orientation_SAMU"
+            },
+            "respondent": {
               "age_range": "sup_70",
-              "height": 173,
-              "postal_code": "75000",
-              "weight": 65.5
+              "imc": 21.9,
+              "postal_code": "75000"
             },
             "risk_factors": {
               "breathing_disease": true,
               "cancer": true,
               "diabetes": true,
-              "heart_disease": true,
-              "immunosuppressant_disease": true,
-              "immunosuppressant_drug": true,
+              "heart_disease": 1,
+              "immunosuppressant_disease": 1,
+              "immunosuppressant_drug": 1,
               "kidney_disease": true,
               "liver_disease": true,
               "pregnant": 1
@@ -341,7 +261,7 @@
               "cough": true,
               "diarrhea": true,
               "feeding_day": true,
-              "fever": false,
+              "fever": 999,
               "sore_throat_aches": true,
               "temperature_cat": "35.5-37.7",
               "tiredness": true,
@@ -370,37 +290,30 @@
         "example": {
           "data": {
             "calculations": {
-              "bmi": 21.9,
-              "bmi_more_30": false,
-              "fever": false,
-              "gravity_factors": 3,
-              "gravity_factors_major": 2,
-              "gravity_factors_minor": 1,
-              "imc": 21.9,
-              "risk_factors": 10
+              "fever_algo": true,
+              "heart_disease_algo": true,
+              "immunosuppressant_disease_algo": true,
+              "immunosuppressant_drug_algo": true
             },
             "metadata": {
-              "algo_version": "2020-04-04T13:24:44.389249Z",
+              "algo_version": "2020-04-04",
               "date": "2020-04-04T13:24:44.389249Z",
               "duration": 1,
-              "form_version": "2020-04-04T13:24:44.389249Z"
+              "form_version": "2020-04-04",
+              "orientation": "orientation_SAMU"
             },
-            "orientation": {
-              "code": "orientation_SAMU"
-            },
-            "patient": {
+            "respondent": {
               "age_range": "sup_70",
-              "height": 173,
-              "postal_code": "75000",
-              "weight": 65.5
+              "imc": 21.9,
+              "postal_code": "75000"
             },
             "risk_factors": {
               "breathing_disease": true,
               "cancer": true,
               "diabetes": true,
-              "heart_disease": true,
-              "immunosuppressant_disease": true,
-              "immunosuppressant_drug": true,
+              "heart_disease": 1,
+              "immunosuppressant_disease": 1,
+              "immunosuppressant_drug": 1,
               "kidney_disease": true,
               "liver_disease": true,
               "pregnant": 1
@@ -411,7 +324,7 @@
               "cough": true,
               "diarrhea": true,
               "feeding_day": true,
-              "fever": false,
+              "fever": 999,
               "sore_throat_aches": true,
               "temperature_cat": "35.5-37.7",
               "tiredness": true,
@@ -432,54 +345,100 @@
         "type": "object",
         "x-struct": "Elixir.Covid19QuestionnaireWeb.Schemas.QuestionnaireResponse"
       },
+      "Respondent": {
+        "description": "[Caractéristiques du respondent](https://docs.google.com/spreadsheets/d/1Ne7QEp_oMHRxxYhqT56AWugfTaywu-cNRZsWPrMGvkY/edit#gid=0)",
+        "example": {
+          "age_range": "sup_70",
+          "imc": 21.9,
+          "postal_code": "75000"
+        },
+        "properties": {
+          "age_range": {
+            "description": "Tranche d’âge",
+            "enum": [
+              "inf_15",
+              "from_15_to_49",
+              "from_50_to_69",
+              "sup_70"
+            ],
+            "type": "string"
+          },
+          "imc": {
+            "description": "IMC de la personne en kg/(cm/100)2",
+            "type": "number"
+          },
+          "postal_code": {
+            "description": "Le code postal",
+            "type": "string"
+          }
+        },
+        "title": "Respondent",
+        "type": "object",
+        "x-struct": "Elixir.Covid19QuestionnaireWeb.Schemas.Respondent"
+      },
       "RiskFactors": {
         "description": "[Questions sur les facteurs risk_factors défavorables au terrain](https://github.com/Delegation-numerique-en-sante/covid19-algorithme-questionnaire/blob/master/pseudo-code.org#questions-sur-les-facteurs-risk_factors-d%C3%A9favorables-au-terrain)",
         "example": {
           "breathing_disease": true,
           "cancer": true,
           "diabetes": true,
-          "heart_disease": true,
-          "immunosuppressant_disease": true,
-          "immunosuppressant_drug": true,
+          "heart_disease": 1,
+          "immunosuppressant_disease": 1,
+          "immunosuppressant_drug": 1,
           "kidney_disease": true,
           "liver_disease": true,
           "pregnant": 1
         },
         "properties": {
           "breathing_disease": {
-            "description": "Avez-vous une maladie respiratoire ? Ou êtes-vous suivi par un pneumologue ?",
+            "description": "Maladie respiratoire",
             "type": "boolean"
           },
           "cancer": {
-            "description": "Avez-vous ou avez-vous eu un cancer ?",
+            "description": "Cancer actuel ou < moins de 3 ans",
             "type": "boolean"
           },
           "diabetes": {
-            "description": "Êtes-vous diabétique ?",
+            "description": "Diabète",
             "type": "boolean"
           },
           "heart_disease": {
-            "description": "Avez-vous une tension artérielle mal équilibrée ? Ou une maladie cardiaque ou vasculaire ? Ou prenez-vous un traitement à visée cardiologique ?",
-            "type": "boolean"
+            "description": "Maladie cardiaque",
+            "enum": [
+              0,
+              1,
+              999
+            ],
+            "type": "integer"
           },
           "immunosuppressant_disease": {
-            "description": "Avez-vous une maladie connue pour diminuer vos défenses immunitaires ?",
-            "type": "boolean"
+            "description": "Maladie défenses immunitaires",
+            "enum": [
+              0,
+              1,
+              999
+            ],
+            "type": "integer"
           },
           "immunosuppressant_drug": {
-            "description": "Prenez-vous un traitement immunosuppresseur ?",
-            "type": "boolean"
+            "description": "Traitement immunodépresseur",
+            "enum": [
+              0,
+              1,
+              999
+            ],
+            "type": "integer"
           },
           "kidney_disease": {
-            "description": "Avez-vous une insuffisance rénale chronique dialysée ?",
+            "description": "Insuffisance rénale",
             "type": "boolean"
           },
           "liver_disease": {
-            "description": "Avez-vous une maladie chronique du foie ?",
+            "description": "Maladie chronique du foie",
             "type": "boolean"
           },
           "pregnant": {
-            "description": "Êtes-vous enceinte ?",
+            "description": "Enceinte",
             "enum": [
               0,
               1,
@@ -500,7 +459,7 @@
           "cough": true,
           "diarrhea": true,
           "feeding_day": true,
-          "fever": false,
+          "fever": 999,
           "sore_throat_aches": true,
           "temperature_cat": "35.5-37.7",
           "tiredness": true,
@@ -508,35 +467,40 @@
         },
         "properties": {
           "agueusia_anosmia": {
-            "description": "Avez-vous noté une forte diminution de votre goût ou de l’odorat ces derniers jours ?",
+            "description": "Perte de goût et d’odorat",
             "type": "boolean"
           },
           "breathlessness": {
-            "description": "Dans les dernières 24 heures, avez-vous noté un manque de souffle INHABITUEL lorsque vous parlez ou faites un petit effort ?",
+            "description": "Essoufflement",
             "type": "boolean"
           },
           "cough": {
-            "description": "Avez-vous une toux ou une augmentation de votre toux habituelle ces derniers jours ?",
+            "description": "Toux",
             "type": "boolean"
           },
           "diarrhea": {
-            "description": "Avez-vous de la diarrhée ces dernières 24 heures (au moins 3 selles molles) ?",
+            "description": "Diarrhée",
             "type": "boolean"
           },
           "feeding_day": {
-            "description": "Êtes-vous dans l’impossibilité de vous alimenter ou boire DEPUIS 24 HEURES OU PLUS ?",
+            "description": "Difficulté pour manger/boire",
             "type": "boolean"
           },
           "fever": {
-            "description": "Pensez-vous avoir eu de la fièvre ces derniers jours (frissons, sueurs) ?",
-            "type": "boolean"
+            "description": "Fièvre",
+            "enum": [
+              0,
+              1,
+              999
+            ],
+            "type": "integer"
           },
           "sore_throat_aches": {
-            "description": "Avez-vous un mal de gorge apparu ces derniers jours ?",
+            "description": "Mal de gorge ou douleurs",
             "type": "boolean"
           },
           "temperature_cat": {
-            "description": "Quelle est votre température ?",
+            "description": "Catégorie de température",
             "enum": [
               "inf_35.5",
               "35.5-37.7",
@@ -547,11 +511,11 @@
             "type": "string"
           },
           "tiredness": {
-            "description": "Avez-vous une fatigue inhabituelle ces derniers jours ?",
+            "description": "Fatigue",
             "type": "boolean"
           },
           "tiredness_details": {
-            "description": "Cette fatigue vous oblige-t-elle à vous reposer plus de la moitié de la journée ?",
+            "description": "Alitement >=50% du temps diurne",
             "type": "boolean"
           }
         },
@@ -601,8 +565,8 @@
     }
   },
   "info": {
-    "title": "Test d'orientation du COVID19",
-    "version": "2020-04-04T21:23:52.742194Z"
+    "title": "API d'orientation COVID19",
+    "version": "2020-04-04"
   },
   "openapi": "3.0.0",
   "paths": {
