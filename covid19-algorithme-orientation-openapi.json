@@ -1,0 +1,785 @@
+{
+  "components": {
+    "responses": {},
+    "schemas": {
+      "Calculations": {
+        "description": "[Calculations](https://github.com/Delegation-numerique-en-sante/covid19-algorithme-questionnaire/blob/master/implementation.org#conseils-pour-limpl%C3%A9mentation-de-lalgorithme)",
+        "example": {
+          "bmi": 21.9,
+          "bmi_more_30": true,
+          "fever": true,
+          "gravity_factors": 3,
+          "gravity_factors_major": 1,
+          "gravity_factors_minor": 2,
+          "imc": 21.9,
+          "risk_factors": 1
+        },
+        "properties": {
+          "bmi": {
+            "description": "BMI",
+            "type": "number"
+          },
+          "bmi_more_30": {
+            "description": "Si la personne a au moins 30 d'IMC en kg/(cm/100)2",
+            "type": "boolean"
+          },
+          "fever": {
+            "description": "Indicateur de fièvre",
+            "type": "boolean"
+          },
+          "gravity_factors": {
+            "description": "Facteurs de gravité mineurs + majeurs",
+            "type": "integer"
+          },
+          "gravity_factors_major": {
+            "description": "Facteurs de gravité majeurs",
+            "type": "integer"
+          },
+          "gravity_factors_minor": {
+            "description": "Facteurs de gravité mineurs",
+            "type": "integer"
+          },
+          "imc": {
+            "description": "IMC",
+            "type": "number"
+          },
+          "risk_factors": {
+            "description": "Facteurs pronostique défavorables liés au terrain",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "bmi_more_30",
+          "fever",
+          "gravity_factors",
+          "gravity_factors_minor",
+          "gravity_factors_major",
+          "risk_factors"
+        ],
+        "title": "Calculations",
+        "type": "object",
+        "x-struct": "Elixir.Covid19QuestionnaireWeb.Schemas.Calculations"
+      },
+      "Error": {
+        "description": "Something bad happened!",
+        "example": {
+          "action": "Please open an issue https://github.com/Delegation-numerique-en-sante/covid19-algorithme-orientation-elixir/issues/new",
+          "code": 500,
+          "info": "Oopsie, we don't know what happened!",
+          "stacktrace": {
+            "kind": "Error, error!",
+            "why": "DKN! DKN!"
+          }
+        },
+        "properties": {
+          "action": {
+            "description": "Recommended action to fix/solve the problem",
+            "type": "string"
+          },
+          "code": {
+            "description": "HTTP status code",
+            "type": "integer"
+          },
+          "info": {
+            "description": "Explanation of what happened",
+            "type": "string"
+          },
+          "stacktrace": {
+            "description": "Additional information for developers",
+            "type": "object"
+          }
+        },
+        "required": [
+          "code",
+          "info",
+          "action"
+        ],
+        "title": "Error",
+        "type": "object",
+        "x-struct": "Elixir.Covid19QuestionnaireWeb.Schemas.Error"
+      },
+      "ErrorResponse": {
+        "description": "Something bad happened!",
+        "example": {
+          "error": {
+            "action": "Please open an issue https://github.com/Delegation-numerique-en-sante/covid19-algorithme-orientation-elixir/issues/new",
+            "code": 500,
+            "info": "Oopsie, we don't know what happened!",
+            "stacktrace": {
+              "kind": "Error, error!",
+              "why": "DKN! DKN!"
+            }
+          }
+        },
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/Error"
+          }
+        },
+        "title": "ErrorResponse",
+        "type": "object",
+        "x-struct": "Elixir.Covid19QuestionnaireWeb.Schemas.ErrorResponse"
+      },
+      "Metadata": {
+        "description": "[Caractéristiques du questionnaire](https://docs.google.com/spreadsheets/d/1Ne7QEp_oMHRxxYhqT56AWugfTaywu-cNRZsWPrMGvkY/edit#gid=0)",
+        "example": {
+          "algo_version": "2020-04-04T13:24:44.389249Z",
+          "date": "2020-04-04T13:24:44.389249Z",
+          "duration": 3600,
+          "form_version": "2020-04-04T13:24:44.389249Z"
+        },
+        "properties": {
+          "algo_version": {
+            "description": "Version de l'algorithme médical",
+            "format": "date-time",
+            "type": "string"
+          },
+          "date": {
+            "description": "Date de fin de remplissage du questionnaire",
+            "format": "date-time",
+            "type": "string"
+          },
+          "duration": {
+            "description": "Durée de remplissage du questionnaire (seconds)",
+            "type": "integer"
+          },
+          "form_version": {
+            "description": "Version du questionnaire",
+            "format": "date-time",
+            "type": "string"
+          }
+        },
+        "required": [
+          "form_version",
+          "algo_version"
+        ],
+        "title": "Metadata",
+        "type": "object",
+        "x-struct": "Elixir.Covid19QuestionnaireWeb.Schemas.Metadata"
+      },
+      "Orientation": {
+        "description": "[Orientation du questionnaire COVID19](https://github.com/Delegation-numerique-en-sante/covid19-algorithme-questionnaire/blob/master/pseudo-code.org#conclusions-possibles)",
+        "example": {
+          "code": "orientation_SAMU"
+        },
+        "properties": {
+          "code": {
+            "description": "[Orientations possibles](https://github.com/Delegation-numerique-en-sante/covid19-algorithme-questionnaire/blob/master/pseudo-code.org#conclusions-possibles)",
+            "enum": [
+              "orientation_moins_de_15_ans",
+              "orientation_domicile_surveillance_1",
+              "orientation_consultation_surveillance_1",
+              "orientation_consultation_surveillance_2",
+              "orientation_SAMU",
+              "orientation_consultation_surveillance_3",
+              "orientation_consultation_surveillance_4",
+              "orientation_surveillance"
+            ],
+            "type": "string"
+          }
+        },
+        "required": [
+          "code"
+        ],
+        "title": "Orientation",
+        "type": "object",
+        "x-struct": "Elixir.Covid19QuestionnaireWeb.Schemas.Orientation"
+      },
+      "Patient": {
+        "description": "[Caractéristiques du patient](https://docs.google.com/spreadsheets/d/1Ne7QEp_oMHRxxYhqT56AWugfTaywu-cNRZsWPrMGvkY/edit#gid=0)",
+        "example": {
+          "age_range": "sup_70",
+          "height": 173,
+          "postal_code": "75000",
+          "weight": 65.5
+        },
+        "properties": {
+          "age_range": {
+            "description": "Âge de la personne",
+            "enum": [
+              "inf_15",
+              "from_15_to_49",
+              "from_50_to_69",
+              "sup_70"
+            ],
+            "type": "string"
+          },
+          "height": {
+            "description": "Quelle est votre taille en centimètres ?",
+            "type": "integer"
+          },
+          "postal_code": {
+            "description": "Code postal",
+            "type": "string"
+          },
+          "weight": {
+            "description": "Quel est votre poids en kilogrammes ?",
+            "type": "number"
+          }
+        },
+        "title": "Patient",
+        "type": "object",
+        "x-struct": "Elixir.Covid19QuestionnaireWeb.Schemas.Patient"
+      },
+      "Questionnaire": {
+        "description": "[Algorithme d'orientation du COVID19](https://github.com/Delegation-numerique-en-sante/covid19-algorithme-questionnaire/blob/master/pseudo-code.org#pr%C3%A9sentation-de-lalgorithme-dquestionnaire-covid19)",
+        "example": {
+          "calculations": {
+            "bmi": 21.9,
+            "bmi_more_30": true,
+            "fever": true,
+            "gravity_factors": 3,
+            "gravity_factors_major": 1,
+            "gravity_factors_minor": 2,
+            "imc": 21.9,
+            "risk_factors": 1
+          },
+          "metadata": {
+            "algo_version": "2020-04-04T13:24:44.389249Z",
+            "date": "2020-04-04T13:24:44.389249Z",
+            "duration": 3600,
+            "form_version": "2020-04-04T13:24:44.389249Z"
+          },
+          "orientation": {
+            "code": "orientation_SAMU"
+          },
+          "patient": {
+            "age_range": "sup_70",
+            "height": 173,
+            "postal_code": "75000",
+            "weight": 65.5
+          },
+          "risk_factors": {
+            "breathing_disease": true,
+            "cancer": true,
+            "diabetes": true,
+            "heart_disease": true,
+            "immunosuppressant_disease": true,
+            "immunosuppressant_drug": true,
+            "kidney_disease": true,
+            "liver_disease": true,
+            "pregnant": 1
+          },
+          "symptoms": {
+            "agueusia_anosmia": true,
+            "breathlessness": true,
+            "cough": true,
+            "diarrhea": true,
+            "feeding_day": true,
+            "fever": false,
+            "sore_throat_aches": true,
+            "temperature_cat": "35.5-37.7",
+            "tiredness": true,
+            "tiredness_details": true
+          },
+          "token": {
+            "date": "2020-03-29 15:20:11.875767Z",
+            "uuid": "c9e77845-83cf-4891-88d6-804d659e81c5"
+          }
+        },
+        "properties": {
+          "calculations": {
+            "$ref": "#/components/schemas/Calculations"
+          },
+          "metadata": {
+            "$ref": "#/components/schemas/Metadata"
+          },
+          "orientation": {
+            "$ref": "#/components/schemas/Orientation"
+          },
+          "patient": {
+            "$ref": "#/components/schemas/Patient"
+          },
+          "risk_factors": {
+            "$ref": "#/components/schemas/RiskFactors"
+          },
+          "symptoms": {
+            "$ref": "#/components/schemas/Symptoms"
+          },
+          "token": {
+            "$ref": "#/components/schemas/Token"
+          }
+        },
+        "required": [
+          "metadata",
+          "patient",
+          "symptoms",
+          "risk_factors"
+        ],
+        "title": "Questionnaire",
+        "type": "object",
+        "x-struct": "Elixir.Covid19QuestionnaireWeb.Schemas.Questionnaire"
+      },
+      "QuestionnaireRequest": {
+        "description": "Corps de la requête POST pour lancer l'algorithme d'orientation",
+        "example": {
+          "questionnaire": {
+            "metadata": {
+              "algo_version": "2020-04-04T13:24:44.389249Z",
+              "form_version": "2020-04-04T13:24:44.389249Z"
+            },
+            "patient": {
+              "age_range": "sup_70",
+              "height": 173,
+              "postal_code": "75000",
+              "weight": 65.5
+            },
+            "risk_factors": {
+              "breathing_disease": true,
+              "cancer": true,
+              "diabetes": true,
+              "heart_disease": true,
+              "immunosuppressant_disease": true,
+              "immunosuppressant_drug": true,
+              "kidney_disease": true,
+              "liver_disease": true,
+              "pregnant": 1
+            },
+            "symptoms": {
+              "agueusia_anosmia": true,
+              "breathlessness": true,
+              "cough": true,
+              "diarrhea": true,
+              "feeding_day": true,
+              "fever": false,
+              "sore_throat_aches": true,
+              "temperature_cat": "35.5-37.7",
+              "tiredness": true,
+              "tiredness_details": true
+            }
+          }
+        },
+        "properties": {
+          "questionnaire": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Questionnaire"
+              }
+            ]
+          }
+        },
+        "required": [
+          "questionnaire"
+        ],
+        "title": "QuestionnaireRequest",
+        "type": "object",
+        "x-struct": "Elixir.Covid19QuestionnaireWeb.Schemas.QuestionnaireRequest"
+      },
+      "QuestionnaireResponse": {
+        "description": "Réponse de l'algorithme d'orientation",
+        "example": {
+          "data": {
+            "calculations": {
+              "bmi": 21.9,
+              "bmi_more_30": false,
+              "fever": false,
+              "gravity_factors": 3,
+              "gravity_factors_major": 2,
+              "gravity_factors_minor": 1,
+              "imc": 21.9,
+              "risk_factors": 10
+            },
+            "metadata": {
+              "algo_version": "2020-04-04T13:24:44.389249Z",
+              "date": "2020-04-04T13:24:44.389249Z",
+              "duration": 1,
+              "form_version": "2020-04-04T13:24:44.389249Z"
+            },
+            "orientation": {
+              "code": "orientation_SAMU"
+            },
+            "patient": {
+              "age_range": "sup_70",
+              "height": 173,
+              "postal_code": "75000",
+              "weight": 65.5
+            },
+            "risk_factors": {
+              "breathing_disease": true,
+              "cancer": true,
+              "diabetes": true,
+              "heart_disease": true,
+              "immunosuppressant_disease": true,
+              "immunosuppressant_drug": true,
+              "kidney_disease": true,
+              "liver_disease": true,
+              "pregnant": 1
+            },
+            "symptoms": {
+              "agueusia_anosmia": true,
+              "breathlessness": true,
+              "cough": true,
+              "diarrhea": true,
+              "feeding_day": true,
+              "fever": false,
+              "sore_throat_aches": true,
+              "temperature_cat": "35.5-37.7",
+              "tiredness": true,
+              "tiredness_details": true
+            },
+            "token": {
+              "date": "2020-04-04T13:24:44.389249Z",
+              "uuid": "c9e77845-83cf-4891-88d6-804d659e81c5"
+            }
+          }
+        },
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Questionnaire"
+          }
+        },
+        "title": "QuestionnaireResponse",
+        "type": "object",
+        "x-struct": "Elixir.Covid19QuestionnaireWeb.Schemas.QuestionnaireResponse"
+      },
+      "RiskFactors": {
+        "description": "[Questions sur les facteurs risk_factors défavorables au terrain](https://github.com/Delegation-numerique-en-sante/covid19-algorithme-questionnaire/blob/master/pseudo-code.org#questions-sur-les-facteurs-risk_factors-d%C3%A9favorables-au-terrain)",
+        "example": {
+          "breathing_disease": true,
+          "cancer": true,
+          "diabetes": true,
+          "heart_disease": true,
+          "immunosuppressant_disease": true,
+          "immunosuppressant_drug": true,
+          "kidney_disease": true,
+          "liver_disease": true,
+          "pregnant": 1
+        },
+        "properties": {
+          "breathing_disease": {
+            "description": "Avez-vous une maladie respiratoire ? Ou êtes-vous suivi par un pneumologue ?",
+            "type": "boolean"
+          },
+          "cancer": {
+            "description": "Avez-vous ou avez-vous eu un cancer ?",
+            "type": "boolean"
+          },
+          "diabetes": {
+            "description": "Êtes-vous diabétique ?",
+            "type": "boolean"
+          },
+          "heart_disease": {
+            "description": "Avez-vous une tension artérielle mal équilibrée ? Ou une maladie cardiaque ou vasculaire ? Ou prenez-vous un traitement à visée cardiologique ?",
+            "type": "boolean"
+          },
+          "immunosuppressant_disease": {
+            "description": "Avez-vous une maladie connue pour diminuer vos défenses immunitaires ?",
+            "type": "boolean"
+          },
+          "immunosuppressant_drug": {
+            "description": "Prenez-vous un traitement immunosuppresseur ?",
+            "type": "boolean"
+          },
+          "kidney_disease": {
+            "description": "Avez-vous une insuffisance rénale chronique dialysée ?",
+            "type": "boolean"
+          },
+          "liver_disease": {
+            "description": "Avez-vous une maladie chronique du foie ?",
+            "type": "boolean"
+          },
+          "pregnant": {
+            "description": "Êtes-vous enceinte ?",
+            "enum": [
+              0,
+              1,
+              888
+            ],
+            "type": "integer"
+          }
+        },
+        "title": "RiskFactors",
+        "type": "object",
+        "x-struct": "Elixir.Covid19QuestionnaireWeb.Schemas.RiskFactors"
+      },
+      "Symptoms": {
+        "description": "[Questions sur les symptômes](https://github.com/Delegation-numerique-en-sante/covid19-algorithme-questionnaire/blob/master/pseudo-code.org#questions-sur-les-sympt%C3%B4mes)",
+        "example": {
+          "agueusia_anosmia": true,
+          "breathlessness": true,
+          "cough": true,
+          "diarrhea": true,
+          "feeding_day": true,
+          "fever": false,
+          "sore_throat_aches": true,
+          "temperature_cat": "35.5-37.7",
+          "tiredness": true,
+          "tiredness_details": true
+        },
+        "properties": {
+          "agueusia_anosmia": {
+            "description": "Avez-vous noté une forte diminution de votre goût ou de l’odorat ces derniers jours ?",
+            "type": "boolean"
+          },
+          "breathlessness": {
+            "description": "Dans les dernières 24 heures, avez-vous noté un manque de souffle INHABITUEL lorsque vous parlez ou faites un petit effort ?",
+            "type": "boolean"
+          },
+          "cough": {
+            "description": "Avez-vous une toux ou une augmentation de votre toux habituelle ces derniers jours ?",
+            "type": "boolean"
+          },
+          "diarrhea": {
+            "description": "Avez-vous de la diarrhée ces dernières 24 heures (au moins 3 selles molles) ?",
+            "type": "boolean"
+          },
+          "feeding_day": {
+            "description": "Êtes-vous dans l’impossibilité de vous alimenter ou boire DEPUIS 24 HEURES OU PLUS ?",
+            "type": "boolean"
+          },
+          "fever": {
+            "description": "Pensez-vous avoir eu de la fièvre ces derniers jours (frissons, sueurs) ?",
+            "type": "boolean"
+          },
+          "sore_throat_aches": {
+            "description": "Avez-vous un mal de gorge apparu ces derniers jours ?",
+            "type": "boolean"
+          },
+          "temperature_cat": {
+            "description": "Quelle est votre température ?",
+            "enum": [
+              "inf_35.5",
+              "35.5-37.7",
+              "37.7-38.9",
+              "sup_39",
+              "NSP"
+            ],
+            "type": "string"
+          },
+          "tiredness": {
+            "description": "Avez-vous une fatigue inhabituelle ces derniers jours ?",
+            "type": "boolean"
+          },
+          "tiredness_details": {
+            "description": "Cette fatigue vous oblige-t-elle à vous reposer plus de la moitié de la journée ?",
+            "type": "boolean"
+          }
+        },
+        "title": "Symptoms",
+        "type": "object",
+        "x-struct": "Elixir.Covid19QuestionnaireWeb.Schemas.Symptoms"
+      },
+      "Token": {
+        "description": "Token",
+        "example": {
+          "date": "2020-04-04T13:24:44.389249Z",
+          "uuid": "c9e77845-83cf-4891-88d6-804d659e81c5"
+        },
+        "properties": {
+          "date": {
+            "description": "Date de crátion du token",
+            "format": "date-time",
+            "type": "string"
+          },
+          "uuid": {
+            "description": "UUID du token",
+            "format": "uuid",
+            "type": "string"
+          }
+        },
+        "title": "Token",
+        "type": "object",
+        "x-struct": "Elixir.Covid19QuestionnaireWeb.Schemas.Token"
+      },
+      "TokenResponse": {
+        "description": "TokenResponse",
+        "example": {
+          "data": {
+            "date": "2020-03-29 15:20:11.875767Z",
+            "uuid": "c9e77845-83cf-4891-88d6-804d659e81c5"
+          }
+        },
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/Token"
+          }
+        },
+        "title": "TokenResponse",
+        "type": "object",
+        "x-struct": "Elixir.Covid19QuestionnaireWeb.Schemas.TokenResponse"
+      }
+    }
+  },
+  "info": {
+    "title": "Test d'orientation du COVID19",
+    "version": "2020-04-04T21:23:52.742194Z"
+  },
+  "openapi": "3.0.0",
+  "paths": {
+    "/questionnaire": {
+      "post": {
+        "callbacks": {},
+        "deprecated": false,
+        "description": "Évaluer le test d'orientation du COVID19",
+        "operationId": "QuestionnaireController.create",
+        "parameters": [
+          {
+            "description": "Token to send the questionnaire",
+            "in": "header",
+            "name": "x-token",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/QuestionnaireRequest"
+              }
+            }
+          },
+          "description": "Paramètres du test d'orientation",
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QuestionnaireResponse"
+                }
+              }
+            },
+            "description": "Questionnaire"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Questionnaire"
+          },
+          "401": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Questionnaire"
+          },
+          "403": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Questionnaire"
+          },
+          "407": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Questionnaire"
+          },
+          "451": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Questionnaire"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Questionnaire"
+          }
+        },
+        "summary": "Évaluer le test d'orientation du COVID19",
+        "tags": []
+      }
+    },
+    "/token": {
+      "post": {
+        "callbacks": {},
+        "deprecated": false,
+        "description": "Create a token",
+        "operationId": "TokenController.create",
+        "parameters": [],
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenResponse"
+                }
+              }
+            },
+            "description": "Questionnaire"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Questionnaire"
+          },
+          "407": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Questionnaire"
+          },
+          "409": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Questionnaire"
+          },
+          "500": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            },
+            "description": "Questionnaire"
+          }
+        },
+        "summary": "Create a token",
+        "tags": []
+      }
+    }
+  },
+  "security": [],
+  "servers": [
+    {
+      "url": "http://localhost:4000",
+      "variables": {}
+    }
+  ],
+  "tags": []
+}
