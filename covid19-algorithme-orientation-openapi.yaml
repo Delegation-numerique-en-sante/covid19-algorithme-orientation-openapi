@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   title: API d'orientation COVID19
-  version: '2020-04-04'
+  version: '2020-04-06'
 servers:
   - url: 'http://localhost:4000'
     variables: {}
@@ -16,41 +16,54 @@ paths:
           schema:
             type: string
       responses:
-        '201':
+        '202':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/QuestionnaireResponse'
+                description: Accepted
+                type: string
           description: Questionnaire
         '400':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                description: Bad Request
+                type: string
           description: Questionnaire
         '401':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                description: Unauthorized
+                type: string
           description: Questionnaire
         '403':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                description: Forbidden
+                type: string
           description: Questionnaire
         '407':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                description: Proxy Authentication Required
+                type: string
+          description: Questionnaire
+        '422':
+          content:
+            application/json:
+              schema:
+                description: Unprocessable Entity
+                type: string
           description: Questionnaire
         '451':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                description: Unavailable For Legal Reasons
+                type: string
           description: Questionnaire
         '500':
           content:
@@ -85,19 +98,22 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                description: Bad Request
+                type: string
           description: Questionnaire
         '407':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                description: Proxy Authentication Required
+                type: string
           description: Questionnaire
         '409':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                description: Conflict
+                type: string
           description: Questionnaire
         '500':
           content:
@@ -141,49 +157,45 @@ components:
     Error:
       description: Something bad happened!
       example:
-        info: 'Oopsie, we don''t know what happened!'
-        action: >-
-          Please open an issue
-          https://github.com/Delegation-numerique-en-sante/covid19-algorithme-orientation-elixir/issues/new
-        code: 500
-        stacktrace:
-          kind: 'Error, error!'
-          why: DKN! DKN!
+        message: >-
+          Failed to cast value using any of: Schema(title: "Questionnaire",
+          type: :object)
+        source:
+          pointer: /questionnaire
+        title: Invalid value
       properties:
-        info:
+        message:
           description: Explanation of what happened
           type: string
-        action:
-          description: Recommended action to fix/solve the problem
-          type: string
-        code:
-          description: HTTP status code
-          type: integer
-        stacktrace:
-          description: Additional information for developers
+        source:
+          description: Where did that happen
           type: object
+        title:
+          description: What happened
+          type: string
       required:
-        - code
-        - info
-        - action
+        - title
+        - source
+        - message
       title: Error
       type: object
       x-struct: Elixir.Covid19QuestionnaireWeb.Schemas.Error
     ErrorResponse:
       description: Something bad happened!
       example:
-        error:
-          info: 'Oopsie, we don''t know what happened!'
-          action: >-
-            Please open an issue
-            https://github.com/Delegation-numerique-en-sante/covid19-algorithme-orientation-elixir/issues/new
-          code: 500
-          stacktrace:
-            kind: 'Error, error!'
-            why: DKN! DKN!
+        errors:
+          - message: >-
+              Failed to cast value using any of: Schema(title: "Questionnaire",
+              type: :object)
+            source:
+              pointer: /questionnaire
+            title: Invalid value
       properties:
         error:
-          $ref: '#/components/schemas/Error'
+          items:
+            anyOf:
+              - $ref: '#/components/schemas/Error'
+          type: array
       title: ErrorResponse
       type: object
       x-struct: Elixir.Covid19QuestionnaireWeb.Schemas.ErrorResponse
@@ -346,55 +358,6 @@ components:
       title: QuestionnaireRequest
       type: object
       x-struct: Elixir.Covid19QuestionnaireWeb.Schemas.QuestionnaireRequest
-    QuestionnaireResponse:
-      description: Réponse de l'algorithme d'orientation
-      example:
-        data:
-          calculations:
-            fever_algo: true
-            heart_disease_algo: true
-            immunosuppressant_disease_algo: true
-            immunosuppressant_drug_algo: true
-          metadata:
-            algo_version: '2020-04-04'
-            date: '2020-04-04T13:24:44.389249Z'
-            duration: 1
-            form_version: '2020-04-04'
-            orientation: orientation_SAMU
-          respondent:
-            age_range: sup_70
-            imc: 21.9
-            postal_code: '75000'
-          risk_factors:
-            breathing_disease: true
-            cancer: true
-            diabetes: true
-            heart_disease: 1
-            immunosuppressant_disease: 1
-            immunosuppressant_drug: 1
-            kidney_disease: true
-            liver_disease: true
-            pregnant: 1
-          symptoms:
-            agueusia_anosmia: true
-            breathlessness: true
-            cough: true
-            diarrhea: true
-            feeding_day: true
-            fever: 999
-            sore_throat_aches: true
-            temperature_cat: 35.5-37.7
-            tiredness: true
-            tiredness_details: true
-          token:
-            date: '2020-04-04T13:24:44.389249Z'
-            uuid: c9e77845-83cf-4891-88d6-804d659e81c5
-      properties:
-        data:
-          $ref: '#/components/schemas/Questionnaire'
-      title: QuestionnaireResponse
-      type: object
-      x-struct: Elixir.Covid19QuestionnaireWeb.Schemas.QuestionnaireResponse
     Respondent:
       description: >-
         [Caractéristiques du
@@ -528,7 +491,7 @@ components:
           enum:
             - inf_35.5
             - 35.5-37.7
-            - 37.7-38.9
+            - 37.8-38.9
             - sup_39
             - NSP
           type: string
